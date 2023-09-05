@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login OTP Verification</title>
+    <!-- Add your CSS stylesheets and links here -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+     <!--Stylesheet-->
+     <style media="screen">
+        /* Your custom styles for login OTP verification page here */
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .background {
+            /* Add a shaded background outside the form */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1; /* Place the background behind the form */
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            max-width: 100%;
+            text-align: center;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        #otp {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #otp:focus {
+            outline: none;
+            border-color: #fda085;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px; /* Added margin to the right side */
+        }
+
+        .success-message {
+            color: green;
+            font-size: 18px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .login-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Your custom HTML content for login OTP verification page here -->
+        <div class="background">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <!-- Similar background and shape styling as your signup.html -->
+        </div>
+        <form id="otpForm" method="post">
+            {% csrf_token %}
+            <h3>Enter the OTP sent to your email</h3>
+            <label for="otp">Enter OTP:</label>
+            <input type="text" id="otp" name="otp" required>
+            <input type="hidden" id="sessionResendOTP" name="session_resend_otp" value="{{ request.session.resend_login_otp }}">
+            <div>
+                <button type="button" id="verifyButton">Verify OTP</button>
+                <button type="button" id="resendOtpButton">Resend OTP</button>
+            </div>
+            <!-- Error message for wrong OTP -->
+            <div id="errorMessage" style="display: none;">
+                <p>Invalid OTP. Please try again.</p>
+            </div>
+            <!-- Success message -->
+            <div id="successMessage" style="display: none;">
+                <h3>Your credentials have been successfully verified!</h3>
+                <p>Click below to proceed to the homepage:</p>
+                <a href="{% url 'home' %}" class="login-button">Home Page</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Your JavaScript code for OTP verification and interactions here
+        const verifyButton = document.getElementById('verifyButton');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const resendOtpButton = document.getElementById('resendOtpButton');
+        const otpInput = document.getElementById('otp');
+        const sessionResendOTP = document.getElementById('sessionResendOTP').value; // Get the value of session_resend_otp
+        
+        verifyButton.addEventListener('click', function() {
+            const enteredOTP = otpInput.value;
+            const storedOTP = '{{ request.session.login_otp }}';
+            const sessionResendOTP = document.getElementById('sessionResendOTP').value;
+            const isValidOTP = enteredOTP === storedOTP || enteredOTP === sessionResendOTP;
+    
+            if (isValidOTP) {
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            } else {
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        });
+    
+        // Example code for resending OTP
+        resendOtpButton.addEventListener('click', function() {
+            fetch('{% url 'resend_login_otp' %}', {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message); // Display success message
+                    document.getElementById('sessionResendOTP').value = data.new_otp; // Update the hidden input field
+                    otpInput.value = ''; // Clear the entered OTP field
+                    errorMessage.style.display = 'none'; // Hide any previous error message
+                } else {
+                    alert(data.message); // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });        
+    </script>    
+</body>
+</html>

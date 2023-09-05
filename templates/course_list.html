@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course List</title>
+    {% comment %} <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css"> {% endcomment %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #556B2F; /* Change the header background color */
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .course-list-section {
+            background-color: #FFEBCD; /* Change this to your preferred color */
+            padding: 2rem 0;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .course-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .course-item {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .course-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-link {
+            display: block;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+        }
+        .message {
+            background-color: #337ab7;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 400px; /* Adjust the max-width as needed */
+            padding: 10px 8px; /* Adjust padding as needed */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box; /* Ensure padding is included in the width */
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+    
+        .pagination .page-item {
+            display: inline-block;
+            margin: 0 5px;
+        }
+    
+        .pagination .page-link {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+    
+        .pagination .page-link:hover {
+            background-color: #f5f5f5;
+        }
+    
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Explore Our Courses</h1>
+    </header>
+    <div class="message">
+        Click on the courses to get more details and contents.
+    </div>
+    <!-- Add the search input field -->
+    <div class="search-section">
+        <div class="input-group">
+            <input type="text" class="form-control search-input" id="courseSearch" placeholder="Search courses...">
+            <div class="input-group-append">
+                <label class="input-group-text" for="filterDropdown">Filter by:</label>
+                <select class="custom-select" id="filterDropdown">
+                    <option value="all">All</option>
+                    <option value="programming">Programming</option>
+                    <option value="design">Design</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="course-list-section">
+        <ul class="course-list">
+            {% for course in page_courses %}
+            <li class="course-item" data-title="{{ course.title | lower }}" data-category="{{ course.category }}">
+                <a class="course-link" href="{% url 'course_detail' course.id %}">
+                    <h2>{{ course.title }}</h2>
+                    <p>{{ course.description }}</p>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Centered Pagination with Rounded Buttons -->
+    <div class="container text-center">
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_courses.has_previous %}
+                    <li class="page-item">
+                        <a href="?page={{ page_courses.previous_page_number }}" class="page-link" aria-label="Previous">Previous</a>
+                    </li>
+                {% endif %}
+    
+                <li class="page-item active">
+                    <span class="page-link">{{ page_courses.number }}</span>
+                </li>
+    
+                {% if page_courses.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ page_courses.next_page_number }}" class="page-link" aria-label="Next">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+     
+    <script>
+        // JavaScript code for search and filter functionality
+        const searchInput = document.getElementById('courseSearch');
+        const filterDropdown = document.getElementById('filterDropdown');
+        const courseItems = document.querySelectorAll('.course-item');
+    
+        searchInput.addEventListener('input', function () {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedFilter = filterDropdown.value;
+            
+            courseItems.forEach(item => {
+                const courseTitle = item.dataset.title;
+                
+                console.log('Search Term:', searchTerm);
+                console.log('Selected Filter:', selectedFilter);
+                console.log('Course Title:', courseTitle);
+    
+                const matchSearch = courseTitle.includes(searchTerm);
+                const matchFilter = selectedFilter === 'all' || courseTitle.includes(selectedFilter);
+    
+                console.log('Match Search:', matchSearch);
+                console.log('Match Filter:', matchFilter);
+    
+                if (matchSearch && matchFilter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

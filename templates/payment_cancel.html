@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Cancelled</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e0f2f1; /* Light green background color */
+        }
+
+        .header {
+            background-color: #f06292; /* Header background color */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #fff; /* Container background color */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #f06292; /* Pink color for the title */
+        }
+
+        p {
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #f06292; /* Pink color for the button */
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ec407a; /* Darker pink on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Payment Cancelled</h2>
+    </div>
+    <div class="container">
+        <p>Your payment was cancelled. If you have any questions, please contact our support team.</p>
+        <a href="{% url 'home' %}" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>

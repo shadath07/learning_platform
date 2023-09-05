@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Available Courses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fdf3e7;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .content {
+            background-color: #d1e8e2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #e1f0f0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .create-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .course-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .course-card {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            flex: 1 1 calc(33.33% - 20px);
+        }
+        .course-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .action-btns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .action-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Your Available Courses</h2>
+    </div>
+    <div class="container">
+        <div class="create-course-btn">
+            <a class="create-btn" href="{% url 'create_course' %}">+ Create Course</a>
+        </div>
+        <div class="course-list">
+            {% for course in user.teacher.course_set.all %}
+                <div class="course-card">
+                    <div class="course-title">
+                        <a href="{% url 'course_list' %}?course_id={{ course.id }}">{{ course.title }}</a>
+                    </div>
+                    <div class="action-btns">
+                        <a class="action-btn" href="{% url 'update_course' course.id %}">Update Course</a>
+                        <a class="action-btn" href="{% url 'delete_course' course.id %}">Delete Course</a>
+                        <a class="action-btn" href="{% url 'add_content' course.id %}">Add Content</a>
+                        {% for content in course.content_set.all %}
+                            <a class="action-btn" href="{% url 'edit_content' course.id content.id %}">Edit Content</a>
+                            <a class="action-btn" href="{% url 'delete_content' course.id content.id %}">Delete Content</a>
+                        {% endfor %}
+                        <a class="action-btn" href="{% url 'course_students' course.id %}">View Students</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if not user.teacher.course_set.all %}
+            <p>You haven't created any courses yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

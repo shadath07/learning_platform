@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Purchased Courses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e6f7ff; /* Body background color */
+        }
+
+        .header {
+            background-color: #20B2AA;  /* Header background color */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #fff; /* Container background color */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+        /* Add down arrow marker to course titles */
+        .course-title {
+            background-color: #20B2AA; /* Course title background color */
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .course-title::after {
+            content: "▼"; /* Unicode arrow character */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+        }
+
+        .message {
+            background-color: #f5f5f5; /* Message background color */
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .course-contents-message {
+            background-color: #20B2AA; /* Message background color */
+            color: #fff;
+            padding: 10px;
+        }
+
+        .panel {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Your Purchased Courses</h2>
+    </div>
+    <div class="container">
+        {% if purchases %}
+            <ul>
+                {% for purchase in purchases %}
+                    <li>
+                        <div class="course-title" onclick="toggleContent('{{ purchase.course.title }}')">
+                            <strong>{{ purchase.course.title }}</strong>
+                        </div>
+                        <div id="course-{{ purchase.course.title }}" class="panel">
+                            <div class="message course-contents-message">
+                                Explore the course materials:
+                            </div>
+                            <ul>
+                                {% for content in purchase.course.content_set.all %}
+                                    <li>
+                                        {{ content.title }}
+                                        {% if content.pdf_file %}
+                                            <p><strong>PDF:</strong> <a href="{{ content.pdf_file.url }}" target="_blank">{{ content.pdf_file.name }}</a></p>
+                                        {% endif %}
+                                        {% if content.youtube_link %}
+                                            <p><strong>YouTube Video:</strong> {{ content.youtube_title }}</p>
+                                            <iframe width="560" height="315" src="{{ content.youtube_link }}" frameborder="0" allowfullscreen></iframe>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't purchased any courses yet.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleContent(courseTitle) {
+            var content = document.getElementById('course-' + courseTitle);
+            if (content.style.display === "none") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

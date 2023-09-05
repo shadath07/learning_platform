@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #556B2F;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .course-details {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333; 
+        }
+
+
+        .course-description {
+            font-size: 18px;
+            margin-bottom: 1.5rem; 
+            color: #666; 
+        }
+
+        .course-price {
+            font-size: 24px; 
+            margin-bottom: 1.5rem; 
+            color: #556B2F; 
+        }
+
+        .teacher-name {
+            font-size: 18px;
+            margin-bottom: 1rem;
+            color: #444; 
+        }
+
+        .purchase-form {
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: #556B2F;
+            color: white;
+            padding: 12px 24px; 
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #405B1A;
+        }
+
+        .contents-list {
+            font-size: 18px;
+            margin-bottom: 1.5rem; 
+            color: #333; 
+        }
+
+        .purchase-message {
+            color: red;
+            font-size: 18px;
+            margin-top: 1.5rem; 
+            text-align: center; 
+        }
+    </style>
+</head>
+<body>
+    <header style="background-image: linear-gradient(135deg, #2980B9, #6DD5FA); color: white; text-align: center; padding: 4rem 0;">
+        <h1 style="font-size: 3rem; font-weight: bold; margin: 0;">Explore</h1>
+        <h2 style="font-size: 2rem; font-weight: normal; margin: 0;">The "{{ course.title }}" Learning Adventure</h2>
+    </header>
+    <div class="course-details">
+        <h2 class="course-title">{{ course.title }}</h2>
+        <p class="course-description">{{ course.description }}</p>
+        <p class="teacher-name">Teacher: {{ course.teacher.user.username }}</p>
+        <!-- Display the original and discounted prices -->
+        <p class="course-price">
+            Original Price: ${{ course.price|floatformat:2 }}<br>
+            <hr style="border-color: #ccc; margin: 10px 0;">
+            <span style="font-weight: bold;">Special Offer:</span> 30% off<br>
+            Discounted Price: <span style="color: #556B2F;">${{ discounted_price|floatformat:2 }}</span>
+        </p>
+
+        <!-- Contents List -->
+        <div class="contents-list">
+            <h3>Course Content Includes:</h3>
+            <ul>
+                <li>Paid Video Content</li>
+                <li>Course Materials (PDFs, Assignments, etc.)</li>
+                <li>Interactive Quizzes</li>
+                <li>Discussion Forums</li>
+                <li>Live Webinars</li>
+            </ul>
+        </div>
+
+        <!-- Purchase Form with PayPal Integration -->
+        <form class="purchase-form" action="{% url 'purchase_course' course.id %}" method="post">
+            {% csrf_token %}
+            {{ paypal_form.as_p }} <!-- Display the PayPal form fields -->
+            <button type="submit">Purchase Course</button>
+        </form>
+
+        <!-- Purchase Message -->
+        <p class="purchase-message">
+            Purchase this course to access the premium contents!
+        </p>
+    </div>
+</body>
+</html>

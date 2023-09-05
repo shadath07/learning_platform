@@ -1,0 +1,295 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Your custom CSS styles here -->
+    <style>
+        /* Add your custom styles here */
+        body {
+            background-image: url('{% static "images/course.jpg" %}');
+            background-size: cover; /* Adjust to 'contain', '100% auto', etc. as needed */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #2ecc71; /* Cool green color */
+            color: white;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .footer-contact {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .container {
+            margin-top: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .messages {
+            margin-top: 20px;
+        }
+
+        .alert {
+            position: relative;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .alert-dismissible .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1.25rem 1.25rem;
+            color: inherit;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+    
+        .dropdown-menu {
+            right: 0;
+            left: auto;
+            max-width: 250px; /* Limit the width of the dropdown menu */
+        }
+
+        /* New styles for the footer */
+        .sticky-footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-title">Mycourse App</div>
+        <div class="header-buttons">
+            {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if user_type == "student" %}
+                            <i class="fas fa-user-graduate"></i>
+                        {% elif user_type == "teacher" %}
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        {% endif %}
+                        <span class="caret"></span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="accountDropdown">
+                        <div class="dropdown-item">
+                            {% if user_type == "student" %}
+                                <i class="fas fa-user-graduate"></i>
+                            {% elif user_type == "teacher" %}
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            {% endif %}
+                            Hello, {{ user.username }}
+                        </div>
+                        <div class="dropdown-item">{{ user.email }}</div>
+                    </div>
+                </div>
+                {% if user_type == "student" %}
+                    <a href="{% url 'purchased_courses' %}" class="btn btn-primary">Purchased Courses</a>
+                {% elif user_type == "teacher" %}
+                    <a href="{% url 'available_courses' %}" class="btn btn-primary">Available Courses</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+            {% else %}
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="loginDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Login
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="loginDropdown">
+                        <a class="dropdown-item" href="{% url 'login' %}?user_type=student">Student Login</a>
+                        <a class="dropdown-item" href="{% url 'login' %}?user_type=teacher">Teacher Login</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="signupDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Signup
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="signupDropdown">
+                        <a class="dropdown-item" href="{% url 'signup' %}?user_type=student">Student</a>
+                        <a class="dropdown-item" href="{% url 'signup' %}?user_type=teacher">Teacher</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <div class="container">
+            <h1>Welcome to MyCourse App</h1>
+            <a href="{% url 'course_list' %}" class="btn btn-primary">Explore Courses</a>
+        </div>
+
+        <!-- Random Content Section -->
+        <section class="container">
+            <h2>Discover Amazing Courses</h2>
+            <p>Explore a diverse selection of high-quality courses designed by experienced instructors. Whether you're a passionate learner seeking new skills or an expert wanting to share your knowledge, our platform offers something for everyone.</p>
+            <p>Uncover innovative courses spanning various subjects, from programming and design to business and personal development. Each course is meticulously crafted to provide engaging content, practical exercises, and valuable insights that empower you to succeed.</p>
+            <p>Our community of educators is dedicated to fostering a supportive learning environment, ensuring that you embark on an educational journey that's both enriching and fulfilling. Don't miss out on the opportunity to expand your horizons and achieve your goals through MyCourse App.</p>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="container">
+            <h2>What Our Users Say</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <blockquote class="blockquote mb-0">
+                                <p>MyCourse App has completely transformed the way I learn. The courses are engaging, interactive, and relevant. I've gained valuable skills that have helped me excel in my career.</p>
+                                <footer class="blockquote-footer">John Doe</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <blockquote class="blockquote mb-0">
+                                <p>The variety of courses available on MyCourse App is astonishing. I've been able to explore subjects I'm passionate about, thanks to the platform's diverse offerings. Learning has never been so enjoyable!</p>
+                                <footer class="blockquote-footer">Jane Smith</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <blockquote class="blockquote mb-0">
+                                <p>As an instructor on MyCourse App, I've had the privilege of connecting with eager learners from around the world. The platform's user-friendly interface and support make teaching a rewarding experience.</p>
+                                <footer class="blockquote-footer">Michael Johnson</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section class="container">
+            <h2>Course Reviews</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="media">
+                        <img src="{% static 'images/image1.webp' %}" class="mr-3" alt="User Image" style="width: 64px; height: 64px;">
+                        <div class="media-body">
+                            <h5 class="mt-0">Amanda Williams</h5>
+                            <p>I've been amazed by the quality of the courses on MyCourse App. The instructors are knowledgeable, and the content is well-structured and easy to follow. Highly recommended!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="media">
+                        <img src="{% static 'images/image2.jpeg' %}" class="mr-3" alt="User Image" style="width: 64px; height: 64px;">
+                        <div class="media-body">
+                            <h5 class="mt-0">David Johnson</h5>
+                            <p>My experience with MyCourse App has been exceptional. The interactive lessons and practical assignments have helped me gain real-world skills that I can apply right away.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Messages display -->
+    {% if messages %}
+    <div class="container messages">
+        {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Sticky Footer -->
+    <footer class="footer">
+        <div class="footer-contact">
+            Contact: contact@mycourseapp.com | Phone: +123-456-7890
+        </div>
+    </footer>
+    
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
