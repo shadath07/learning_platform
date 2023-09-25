@@ -68,13 +68,13 @@
     
         {% if existing_content %}
         <div class="alert alert-warning">
-            Content for this course already exists. You can edit it below.
+            Content for this course already exists. You can add more content to it below or edit it.
         </div>
         {% endif %}
     
-        {% if existing_content %}
-        <a href="{% url 'edit_content' course_id=course.id content_id=existing_content.first.id %}" class="edit-button">Edit Content</a>
-        {% endif %}
+        {% for content_item in existing_content %}
+        <a href="{% url 'edit_content' course_id=course.id content_id=content_item.id %}" class="edit-button">Edit Content {{ forloop.counter }}</a>
+        {% endfor %}
     
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}

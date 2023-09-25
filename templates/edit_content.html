@@ -65,14 +65,20 @@
         <h1>Edit Course Content</h1>
     </div>
     <div class="container">
-        <h2>Edit Content for "{{ content.course.title }}"</h2>
+        <h2>Edit Content for "{{ course.title }}"</h2>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            
+            {% for content in content_items %}
+                <div class="content-item">
+                    <h3>{{ content.title }}</h3>
+                    {{ form.as_table }}
+                </div>
+            {% endfor %}
+            
             <button type="submit">Save Changes</button>
         </form>
-
         <a href="{% url 'available_courses' %}">Back to Available Courses</a>
     </div>
 </body>

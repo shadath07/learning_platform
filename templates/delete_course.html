@@ -63,18 +63,17 @@
 </head>
 <body>
     <div class="header">
-        <h1>Delete Course</h1>
+        <h1>Delete Content</h1>
     </div>
     <div class="container">
-        <h2>{{ course.title }}</h2>
-
-        <p>Are you sure you want to delete this course?</p>
+        <h2>{{ content.course.title }}</h2>
+        <p>Are you sure you want to delete this content?</p>
         <form method="post">
             {% csrf_token %}
             <button type="submit">Confirm Delete</button>
         </form>
-
         <a href="{% url 'available_courses' %}">Cancel</a>
-    </div>
+    </div>    
 </body>
 </html>
+    

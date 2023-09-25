@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'learning_platform.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'online_platform',
+        'USER': 'shad',
+        'PASSWORD': '@Shad1234',
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 
@@ -166,3 +170,4 @@ PAYPAL_TEST = True  # Set to False in production
 PAYPAL_IMAGE = 'your-logo-image-url'  # Optional: Your logo for PayPal checkout page
 PAYPAL_CLIENT_ID = 'Ae8uDsvNG-l-cUi9mDPAORgT71e_3ru8YJHMJvLA6t2Spz_A8bK4q-i0fZBsdHFeHSIgoicJ4qBaIydb'
 PAYPAL_CLIENT_SECRET = 'EPRdfrnhH4xVKJLK-BgFYPNprpXbaspctlaOp10F-Gmc0Ih53rSiGrokgA9o3635J40wFF8LaAhtlcax'
+

@@ -4,7 +4,6 @@ from .models import CustomUser, Course, Content
 
 class CustomUserCreationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=CustomUser.USER_TYPE_CHOICES, widget=forms.RadioSelect)
-
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'user_type', 'password1', 'password2']

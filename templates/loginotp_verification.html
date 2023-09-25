@@ -166,8 +166,6 @@
                 errorMessage.style.display = 'block';
             }
         });
-    
-        // Example code for resending OTP
         resendOtpButton.addEventListener('click', function() {
             fetch('{% url 'resend_login_otp' %}', {
                 method: 'GET',

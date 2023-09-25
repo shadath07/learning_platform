@@ -96,10 +96,10 @@
                         <a class="action-btn" href="{% url 'update_course' course.id %}">Update Course</a>
                         <a class="action-btn" href="{% url 'delete_course' course.id %}">Delete Course</a>
                         <a class="action-btn" href="{% url 'add_content' course.id %}">Add Content</a>
-                        {% for content in course.content_set.all %}
-                            <a class="action-btn" href="{% url 'edit_content' course.id content.id %}">Edit Content</a>
-                            <a class="action-btn" href="{% url 'delete_content' course.id content.id %}">Delete Content</a>
-                        {% endfor %}
+                        {% if course.content_set.all %}
+                            <a class="action-btn" href="{% url 'edit_content' course_id=course.id content_id=course.content_set.first.id %}">Edit Content</a>
+                            <a class="action-btn" href="{% url 'delete_content' course_id=course.id content_id=course.content_set.first.id %}">Delete Content</a>
+                        {% endif %}
                         <a class="action-btn" href="{% url 'course_students' course.id %}">View Students</a>
                     </div>
                 </div>

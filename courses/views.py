@@ -107,7 +107,6 @@ def loginotp_verification(request):
             messages.error(request, "Invalid OTP. Please try again.")
     return render(request, 'loginotp_verification.html', {'show_verification_form': True})
 
-
 def resend_login_otp(request):
     if request.method == 'GET':
         user_email = request.user.email
@@ -364,36 +363,35 @@ def add_content(request, course_id):
     if request.method == 'POST':
         form = ContentForm(request.POST, request.FILES)
         if form.is_valid():
-            if existing_content.exists():
-                messages.warning(request, 'Content for this course already exists. You can edit it below.')
-            else:
-                content = form.save(commit=False)
-                content.course = course
-                content.teacher = request.user.teacher
-                content.save()
-                return redirect('available_courses')  
+            content = form.save(commit=False)
+            content.course = course
+            content.teacher = request.user.teacher
+            content.save()
+            messages.success(request, 'Content added successfully.')
+            return redirect('available_courses')
     else:
         form = ContentForm()
     return render(request, 'add_content.html', {'course': course, 'form': form, 'existing_content': existing_content})
 
-
 @login_required
 def edit_content(request, course_id, content_id):
-    content = get_object_or_404(Content, id=content_id, course_id=course_id)
+    course = get_object_or_404(Course, id=course_id)
+    content_items = Content.objects.filter(course=course)
     if request.method == 'POST':
-        form = ContentForm(request.POST, request.FILES, instance=content)
+        form = ContentForm(request.POST, request.FILES, instance=content_items[0])
         if form.is_valid():
             form.save()
-            return redirect('available_courses')  
+            return redirect('available_courses')
     else:
-        form = ContentForm(instance=content)
-    return render(request, 'edit_content.html', {'content': content, 'form': form})
-
+        form = ContentForm(instance=content_items[0])
+    return render(request, 'edit_content.html', {'course': course, 'content_items': content_items, 'form': form})
 
 @login_required
 def delete_content(request, course_id, content_id):
     content = get_object_or_404(Content, id=content_id)
+    if content.course.id != course_id:
+        return redirect('available_courses') 
     if request.method == 'POST':
         content.delete()
-        return redirect('edit_course', course_id=course_id)
+        return redirect('available_courses') 
     return render(request, 'delete_content.html', {'content': content})
