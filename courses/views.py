@@ -35,6 +35,7 @@ def HomePage(request):
         user_type = request.user.user_type
     return render(request, 'home.html', {'user_type': user_type})
 
+
 def SignupPage(request):
     form = CustomUserCreationForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -220,6 +221,7 @@ def CourseDetail(request, course_id):
     }
     return render(request, 'course_detail.html', context)
 
+
 @login_required(login_url='login')
 def PurchaseCourse(request, course_id):
     course = get_object_or_404(Course, id=course_id)
@@ -231,7 +233,7 @@ def PurchaseCourse(request, course_id):
         "invoice": f"course-{course_id}",
         "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
         "return_url": f"{request.build_absolute_uri(reverse('payment_success'))}?status=success&course_id={course_id}",
-        "cancel_return": f"{request.build_absolute_uri(reverse('payment_success'))}?status=cancel&course_id={course_id}",
+        "cancel_return": f"{request.build_absolute_uri(reverse('payment_cancel'))}?status=cancel&course_id={course_id}",
     }
     paypal_form = PayPalPaymentsForm(initial=paypal_dict)
     context = {
@@ -252,18 +254,11 @@ def payment_success(request):
         purchase = Purchase(student=student, course=course, content=content, teacher=course.teacher)
         purchase.save()
         send_purchase_confirmation_email(request.user, course)
-        return redirect('purchased_courses')    
+        return render(request,'payment_success.html')    
     elif payment_status == 'cancel':
         return redirect('payment_cancel')   
     return redirect('payment_error')  
 
-@login_required(login_url='login')
-def payment_error(request):
-    return render(request, 'payment_error.html')
-
-@login_required(login_url='login')
-def payment_cancel(request):
-    return render(request, 'payment_cancel.html')
 
 @csrf_exempt
 def paypal_ipn(request):
@@ -285,13 +280,21 @@ def paypal_ipn(request):
                     send_purchase_confirmation_email(user, course)
                 except Exception as e:
                     print(f"Exception during purchase processing: {e}")
-                    return HttpResponse(status=500)
+                    return HttpResponse(status=500) # Internal Server Error
                 return HttpResponse("OK")
             else:
-                return HttpResponse(status=200)
+                return HttpResponse(status=400)  # Bad Request (Payment not completed)
         else:
-            return HttpResponse(status=400)
-    return HttpResponse(status=405)
+            return HttpResponse(status=400) # Bad Request (Verification failed)
+    return HttpResponse(status=405)   # Method Not Allowed
+
+@login_required(login_url='login')
+def payment_error(request):
+    return render(request, 'payment_error.html')
+
+@login_required(login_url='login')
+def payment_cancel(request):
+    return render(request, 'payment_cancel.html')
 
 
 @login_required(login_url='login')
@@ -326,7 +329,7 @@ def create_course(request):
     if request.method == 'POST':
         form = CourseForm(request.POST)
         if form.is_valid():
-            course = form.save(commit=False)
+            course = form.save(commit=False)  #Here commit is set to false as it does not immediately save the changes to the database
             course.teacher = request.user.teacher
             course.save()
             return redirect('available_courses')  

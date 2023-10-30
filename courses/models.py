@@ -17,11 +17,13 @@ class Teacher(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Student(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     courses_enrolled = models.ManyToManyField('Course', related_name='students_enrolled')
     def __str__(self):
         return self.user.username
+
 
 class Course(models.Model):
     title = models.CharField(max_length=200)

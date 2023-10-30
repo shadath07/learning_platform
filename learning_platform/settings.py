@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'courses'
+    'paypal.standard',
+    'courses',
+    'rest_framework',
+    'courses.api',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -139,7 +144,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'kingshad715@gmail.com'
-EMAIL_HOST_PASSWORD = 'lhallfqtiunyuogh'
+EMAIL_HOST_PASSWORD = 'axak xjlu nzcr phec'
 DEFAULT_FROM_EMAIL = 'kingshad715@gmail.com'  # Set your default "from" address
 
 AUTH_USER_MODEL = 'courses.CustomUser'
@@ -149,6 +154,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# To disable the login users when on the admin page .
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -165,9 +171,36 @@ LOGGING = {
 LOGIN_REDIRECT_URL = 'home'
 
 
-PAYPAL_RECEIVER_EMAIL = 'shad001@gmail.com'
+PAYPAL_RECEIVER_EMAIL = 'shad11@gmail.com'
 PAYPAL_TEST = True  # Set to False in production
 PAYPAL_IMAGE = 'your-logo-image-url'  # Optional: Your logo for PayPal checkout page
-PAYPAL_CLIENT_ID = 'Ae8uDsvNG-l-cUi9mDPAORgT71e_3ru8YJHMJvLA6t2Spz_A8bK4q-i0fZBsdHFeHSIgoicJ4qBaIydb'
-PAYPAL_CLIENT_SECRET = 'EPRdfrnhH4xVKJLK-BgFYPNprpXbaspctlaOp10F-Gmc0Ih53rSiGrokgA9o3635J40wFF8LaAhtlcax'
+PAYPAL_CLIENT_ID = 'AUr72unlhImP5ZzSdJcMOW1xd3LR3wmddAaTcGGYVz4AU6KYQ3Vydo1WLYe3MiDZAWZB8T7f4WylNhMg'
+PAYPAL_CLIENT_SECRET = 'EJsVqXw_YzbUpnVA4o6qM-JKHx5Pg4CzmcP1U0JL84PFJM7yk314nTCb0UHkhGYP_40hVFeucYVWi4VW'
+PAYPAL_IPN_URL = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
 
+
+# JWT Authentication configurations
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=45),
+    'REFRESH_TOKEN_LIFETIME':timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS':False,
+}
+
+
+# This is the Global PageNumberPagination settings for all the views.
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE' : 5,
+}
+
+
+# Disabled csrf protection for testing
+# Need to enable csrf protection in production
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'

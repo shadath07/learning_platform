@@ -72,7 +72,7 @@
             {{ paypal_form.render }}
             
             <input type="hidden" name="return" value="{% url 'payment_success' %}?status=success&course_id={{ course.id }}">
-            <input type="hidden" name="cancel_return" value="{% url 'payment_success' %}?status=cancel&course_id={{ course.id }}">
+            <input type="hidden" name="cancel_return" value="{% url 'payment_cancel' %}?status=cancel&course_id={{ course.id }}">
             
             <button id="purchase-button" type="button">Proceed to PayPal Payment</button>
             <p id="processing-message" style="display: none;">Processing your payment...</p>
