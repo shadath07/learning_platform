@@ -171,19 +171,19 @@ LOGGING = {
 LOGIN_REDIRECT_URL = 'home'
 
 
-PAYPAL_RECEIVER_EMAIL = 'shad11@gmail.com'
+PAYPAL_RECEIVER_EMAIL = 'shad2@gmail.com'
 PAYPAL_TEST = True  # Set to False in production
 PAYPAL_IMAGE = 'your-logo-image-url'  # Optional: Your logo for PayPal checkout page
-PAYPAL_CLIENT_ID = 'AUr72unlhImP5ZzSdJcMOW1xd3LR3wmddAaTcGGYVz4AU6KYQ3Vydo1WLYe3MiDZAWZB8T7f4WylNhMg'
-PAYPAL_CLIENT_SECRET = 'EJsVqXw_YzbUpnVA4o6qM-JKHx5Pg4CzmcP1U0JL84PFJM7yk314nTCb0UHkhGYP_40hVFeucYVWi4VW'
+PAYPAL_CLIENT_ID = 'ARKM-OwXbSs7TqUrlZbzAtFTfzEwemDQWm8UdNSiatYTpWmCk6dDtiYe5hFij7nTA7uCKYCA8W71VSNI'
+PAYPAL_CLIENT_SECRET = 'ENivQ1H61uPNxIQdS3RzloQFSxNSFk8NGFNoEYkKs9wm4UrDBdUqrQxTLYQTv4gGm5Q4wZvv4wYqVwf6'
 PAYPAL_IPN_URL = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
 
 
 # JWT Authentication configurations
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
 }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME':timedelta(minutes=45),
@@ -202,5 +202,5 @@ REST_FRAMEWORK = {
 
 # Disabled csrf protection for testing
 # Need to enable csrf protection in production
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_SAMESITE = 'Lax'
+# CSRF_COOKIE_SECURE = False
+# CSRF_COOKIE_SAMESITE = 'Lax'

@@ -81,6 +81,7 @@ def LoginPage(request):
             login(request, user)
             totp = pyotp.TOTP(pyotp.random_base32())
             otp = totp.now()
+            print(otp)
             subject = '2FA OTP for Login'
             message = f'Your OTP for login is: {otp}'
             from_email = 'kingshad715@gmail.com'
@@ -114,6 +115,7 @@ def resend_login_otp(request):
         if user_email:
             totp = pyotp.TOTP(pyotp.random_base32())
             otp = totp.now()
+            print(otp)
             subject = 'Resend 2FA OTP for Login'
             message = f'Your new OTP for login is: {otp}'
             from_email = 'kingshad715@gmail.com'  

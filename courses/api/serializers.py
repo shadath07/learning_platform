@@ -1,16 +1,18 @@
 from rest_framework import serializers
 from courses.models import *
 
+
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
-        
+  
         
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
+
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,6 +24,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+    
         
 class CourseFormSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,17 +36,23 @@ class ContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Content
         fields = '__all__'
+        
             
 class ContentFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Content
         fields = ['pdf_file', 'youtube_link']
+  
         
 class PurchaseSerializer(serializers.ModelSerializer):
+    student = serializers.StringRelatedField()
+    course = serializers.StringRelatedField()
+    teacher = serializers.StringRelatedField()
+    # content = serializers.StringRelatedField()
     class Meta:
         model = Purchase
-        fields = '__all__'
-        
+        fields = ['student','course','purchase_date','teacher','content']
+ 
         
 class CustomUserRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
@@ -69,8 +78,8 @@ class CustomUserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['email','password']
+     
         
-
 class ResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(write_only = True, style ={'input_type':'password'})
     confirm_password = serializers.CharField(write_only =True,style={'input_type':'password'})
