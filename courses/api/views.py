@@ -113,9 +113,9 @@ def loginotp_verification_api(request):
                     refresh_token = str(refresh)
                     return Response({"Success": "Your credentials have been successfully verified.", "access_token": access_token, "refresh_token": refresh_token}, status=status.HTTP_200_OK)
                 return Response({"error": "User not found with the provided email."}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({"error": "Email not found in the session. Please try logging in again."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Email not found. Please try logging in again."}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"error": "Invalid OTP. Please try again."}, status=status.HTTP_400_BAD_REQUEST)
-    return Response({"Message": "Welcome to the OTP verification endpoint."}, status=status.HTTP_200_OK)
+    return Response({"status": "error", "message": "Invalid Request Method"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET','POST'])
 @authentication_classes([JWTAuthentication])
@@ -250,12 +250,12 @@ def payment_success_api(request):
         content_items = Content.objects.filter(course=course)
         if content_items.exists():
             for content in content_items:
-                purchase = Purchase(student=student, course = course,content=content, teacher=course.teacher)
+                purchase = Purchase(student=student, course=course,content=content, teacher=course.teacher)
                 purchase.save()
                 send_purchase_confirmation_email(request.user,course)
                 purchase_serializer = PurchaseSerializer(purchase)
-                return Response({'mesaage':'Payment was successful','purchase':purchase_serializer.data}, status = status.HTTP_200_OK)
-        return Response({'message': 'No content found for the course'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'status':'Payment was successful','purchase':purchase_serializer.data}, status = status.HTTP_200_OK)
+        return Response({'status': 'No content found for the course'}, status=status.HTTP_404_NOT_FOUND)
     elif payment_status == 'cancel':
         return Response({'message':'Payment was cancelled'},status=status.HTTP_404_NOT_FOUND)
     return Response({'message':'Payment error'},status=status.HTTP_400_BAD_REQUEST)
@@ -330,12 +330,12 @@ def purchased_courses_api(request):
                     'title': course.title,
                     'contents': content_data,
                 }
-                purchase_info = {
-                    'purchase': purchase.id,
-                    'course': course_info,
-                }
-                purchase_data.append(purchase_info)
-        return Response(purchase_data, status=status.HTTP_200_OK)
+            purchase_info = {
+                'purchase': purchase.id,
+                'course': course_info,
+            }
+            purchase_data.append(purchase_info)
+            return Response(purchase_data, status=status.HTTP_200_OK)
     return Response({'status': 'Access Denied'}, status=status.HTTP_403_FORBIDDEN)
 
 @api_view(['GET'])
@@ -422,7 +422,7 @@ def delete_course_api(request,course_id):
 def add_content_api(request,course_id):
     try:
         course =get_object_or_404(Course,id=course_id)
-        existing_content = Content.objects.filter(course = course)
+        # existing_content = Content.objects.filter(course = course)
     except Course.DoesNotExist:
         return Response({'status':'Course Not Found'},status=status.HTTP_404_NOT_FOUND)
     if request.method  == 'POST':
@@ -484,6 +484,7 @@ def delete_content_api(request,course_id,content_id=None):
 
 
 
+
 # @api_view(['GET'])
 # @authentication_classes([JWTAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -507,6 +508,3 @@ def delete_content_api(request,course_id,content_id=None):
 #             return Response({'status':'Courses Not Found'}, status=status.HTTP_404_NOT_FOUND)
 #     return Response({'status':'Invalid Request Method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
-        
-        

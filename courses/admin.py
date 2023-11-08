@@ -18,7 +18,7 @@ class ContentAdmin(admin.ModelAdmin):
     list_display = ('id','course', 'teacher')
 
 class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('student', 'course', 'purchase_date','content')
+    list_display = ('id','student', 'course', 'purchase_date','content')
 
 # Register your custom admin classes
 admin.site.register(CustomUser, CustomUserAdmin)

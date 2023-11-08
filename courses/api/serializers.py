@@ -21,18 +21,23 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    course = serializers.StringRelatedField()
+    teacher = serializers.StringRelatedField()
     class Meta:
         model = Course
         fields = '__all__'
     
         
 class CourseFormSerializer(serializers.ModelSerializer):
+    teacher = serializers.StringRelatedField()
     class Meta:
         model = Course
         fields = ['title', 'description', 'teacher', 'price', 'rating']
 
 
 class ContentSerializer(serializers.ModelSerializer):
+    course = serializers.StringRelatedField()
+    teacher = serializers.StringRelatedField()
     class Meta:
         model = Content
         fields = '__all__'
@@ -48,10 +53,9 @@ class PurchaseSerializer(serializers.ModelSerializer):
     student = serializers.StringRelatedField()
     course = serializers.StringRelatedField()
     teacher = serializers.StringRelatedField()
-    # content = serializers.StringRelatedField()
     class Meta:
         model = Purchase
-        fields = ['student','course','purchase_date','teacher','content']
+        fields = ['student','course','purchase_date','teacher']
  
         
 class CustomUserRegistrationSerializer(serializers.ModelSerializer):

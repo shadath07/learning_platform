@@ -157,10 +157,17 @@ def forgot_password(request):
         current_site = get_current_site(request)
         reset_url = reverse('reset_password', kwargs={'uidb64': uid, 'token': token})
         subject = 'Reset your password'
-        message = render_to_string('reset_password_email.html', {
-            'user': user,
-            'reset_url': reset_url,
-        })
+        # message = render_to_string('reset_password_email.html', {
+        #     'user': user,
+        #     'reset_url': reset_url,
+        #     'current_site': current_site,
+        # })
+        message = f"Hello {user.username},\n\n"
+        message += "We received a request to reset your password. If you did not make this request, please ignore this email.\n\n"
+        message += f"To reset your password, click the link below:\n{current_site}{reset_url}\n\n"
+        message += "If you have any questions or concerns, please contact us.\n\n"
+        message += "Best regards,\n"
+        message += "The Learning Platform Team"
         send_mail(subject, message, 'kingshad715@gmail.com', [user.email])
         messages.success(request, 'A password reset link has been sent to your email.')
         return redirect(reset_url)
