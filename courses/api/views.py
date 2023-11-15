@@ -330,12 +330,12 @@ def purchased_courses_api(request):
                     'title': course.title,
                     'contents': content_data,
                 }
-            purchase_info = {
-                'purchase': purchase.id,
-                'course': course_info,
-            }
-            purchase_data.append(purchase_info)
-            return Response(purchase_data, status=status.HTTP_200_OK)
+                purchase_info = {
+                    'purchase': purchase.id,
+                    'course': course_info,
+                }
+                purchase_data.append(purchase_info)
+        return Response(purchase_data, status=status.HTTP_200_OK)
     return Response({'status': 'Access Denied'}, status=status.HTTP_403_FORBIDDEN)
 
 @api_view(['GET'])
