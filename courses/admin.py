@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('id','username', 'email', 'first_name', 'last_name', 'user_type')
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('id','title', 'teacher', 'price', 'rating')
+    list_display = ('id','title', 'teacher', 'price', 'rating', 'thumbnail')
 
 class ContentAdmin(admin.ModelAdmin):
     list_display = ('id','course', 'teacher')

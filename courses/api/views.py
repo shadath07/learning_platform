@@ -268,7 +268,9 @@ def paypal_ipn_api(request):
     if request.method == 'POST':
         verification_data = {'cmd': '_notify-validate'}
         verification_data.update(request.data)
+        logger.info(f"Verification data: {verification_data}")
         response = requests.post(settings.PAYPAL_IPN_URL, data=verification_data)
+        logger.info(f"Verification response: {response.text}")
         if response.text == 'VERIFIED':
             payment_status = request.data.get('payment_status')
             if payment_status == 'Completed':
@@ -507,4 +509,3 @@ def delete_content_api(request,course_id,content_id=None):
 #         except Course.DoesNotExist:
 #             return Response({'status':'Courses Not Found'}, status=status.HTTP_404_NOT_FOUND)
 #     return Response({'status':'Invalid Request Method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-

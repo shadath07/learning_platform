@@ -128,10 +128,10 @@
         .social i{
         margin-right: 4px;
         }
-        /* Error messages styling */
         .error-message {
-            color: black;
-            font-size: 14px;
+            color: #ff0000; /* Red text color */
+            background-color: #ffeeee; /* Light red background */
+            font-size: 16px;
             margin-top: 10px;
             text-align: center;
         }
@@ -180,6 +180,30 @@
         select option {
             color: #000; /* Set the text color for the options */
         }
+        .password-rules {
+            display: none;
+            margin-top: 10px;
+            background-color: rgba(255,255,255,0.07);
+            border-radius: 5px;
+            padding: 10px;
+            color: #000;
+        }
+    
+        .password-rules p {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+    
+        .password-rules ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    
+        .password-rules li {
+            font-size: 12px;
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -194,12 +218,13 @@
 
             <!-- Display error messages -->
             {% if messages %}
-            <div class="error-message">
-                {% for message in messages %}
-                {{ message }}
-                {% endfor %}
-            </div>
+                <div class="error-message">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
             {% endif %}
+
 
             <label for="username">Username:</label>
             <input type="text" placeholder="Username" name="username" id="username" required>
@@ -209,7 +234,19 @@
 
             <label for="password1">Password:</label>
             <input type="password" placeholder="Password" id="password1" name="password1" required>
+            
 
+            <!-- Password rules container -->
+            <div class="password-rules" id="password-rules-container" style="display: none;">
+                <p>Password must:</p>
+                <ul>
+                    <li>Be at least 8 characters long</li>
+                    <li>Contain at least 2 alphabetic characters</li>
+                    <li>Contain at least 1 special character from ~!@#$%^&*()_+{}\":;'[]</li>
+                    <li>Contain at least 1 lowercase letter</li>
+                    <li>Contain at least 1 uppercase letter</li>
+                </ul>
+            </div>
 
             <label for="password2">Confirm Password:</label>
             <input type="password" placeholder="Conform Password" id="password2" name="password2" required>
@@ -229,5 +266,19 @@
             <a href="{% url 'course_list' %}" class="btn btn-primary">Explore Courses</a>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password1');
+            const passwordRulesContainer = document.getElementById('password-rules-container');
+
+            passwordInput.addEventListener('focus', function () {
+                passwordRulesContainer.style.display = 'block';
+            });
+
+            passwordInput.addEventListener('blur', function () {
+                passwordRulesContainer.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>

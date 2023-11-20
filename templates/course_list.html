@@ -110,6 +110,13 @@
             border-color: #007bff;
             color: #fff;
         }
+        .course-thumbnail {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
     </style>
 </head>
 <body>
@@ -138,6 +145,9 @@
             {% for course in page_courses %}
             <li class="course-item" data-title="{{ course.title | lower }}" data-category="{{ course.category }}">
                 <a class="course-link" href="{% url 'course_detail' course.id %}">
+                    {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }} Thumbnail" class="course-thumbnail">
+                    {% endif %}
                     <h2>{{ course.title }}</h2>
                     <p>{{ course.description }}</p>
                 </a>

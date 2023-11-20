@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from courses.models import *
+from django.contrib.auth.password_validation import validate_password
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -32,7 +33,7 @@ class CourseFormSerializer(serializers.ModelSerializer):
     teacher = serializers.StringRelatedField()
     class Meta:
         model = Course
-        fields = ['title', 'description', 'teacher', 'price', 'rating']
+        fields = ['title', 'description', 'teacher', 'price', 'rating', 'thumbnail']
 
 
 class ContentSerializer(serializers.ModelSerializer):
@@ -65,13 +66,24 @@ class CustomUserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password1', 'password2', 'user_type']
-    def create(self, validated_data):
-        password1 = validated_data.pop('password1')
-        password2 = validated_data.pop('password2')
+    def validate_password1(self, value):
+        validate_password(value)
+        return value
+    
+    def validate(self, data):
+        password1 = data.get('password1')
+        password2 = data.get('password2')
         if password1 != password2:
             raise serializers.ValidationError("Password and password confirmation do not match.")
-        user = CustomUser(**validated_data)
-        user.set_password(password1)
+        return data
+    
+    def create(self, validated_data):
+        user = CustomUser.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            user_type=validated_data['user_type']
+        )
+        user.set_password(validated_data['password1'])
         user.save()
         return user
 

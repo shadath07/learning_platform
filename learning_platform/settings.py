@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_password_validators',
     'paypal.standard',
     'courses',
     'rest_framework',
@@ -100,10 +101,24 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_PASSWORD_VALIDATORS = [
     {
+        'NAME': 'django_password_validators.password_character_requirements.password_validation.PasswordCharacterValidator',
+        'OPTIONS': {
+             'min_length_digit': 0, 
+             'min_length_alpha': 2, 
+             'min_length_special': 1, 
+             'min_length_lower': 1,  
+             'min_length_upper': 1,  
+             'special_characters': "~!@#$%^&*()_+{}\":;'[]"
+        }
+    },
+    {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -176,7 +191,7 @@ PAYPAL_TEST = True  # Set to False in production
 PAYPAL_IMAGE = 'your-logo-image-url'  # Optional: Your logo for PayPal checkout page
 PAYPAL_CLIENT_ID = 'ARKM-OwXbSs7TqUrlZbzAtFTfzEwemDQWm8UdNSiatYTpWmCk6dDtiYe5hFij7nTA7uCKYCA8W71VSNI'
 PAYPAL_CLIENT_SECRET = 'ENivQ1H61uPNxIQdS3RzloQFSxNSFk8NGFNoEYkKs9wm4UrDBdUqrQxTLYQTv4gGm5Q4wZvv4wYqVwf6'
-PAYPAL_IPN_URL = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
+PAYPAL_IPN_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 
 
 # JWT Authentication configurations

@@ -336,7 +336,7 @@ def course_students(request, course_id):
 @login_required
 def create_course(request):
     if request.method == 'POST':
-        form = CourseForm(request.POST)
+        form = CourseForm(request.POST, request.FILES)
         if form.is_valid():
             course = form.save(commit=False)  #Here commit is set to false as it does not immediately save the changes to the database
             course.teacher = request.user.teacher
@@ -351,7 +351,7 @@ def create_course(request):
 def update_course(request, course_id):
     course = Course.objects.get(id=course_id)
     if request.method == 'POST':
-        form = CourseForm(request.POST, instance=course)
+        form = CourseForm(request.POST,request.FILES, instance=course)
         if form.is_valid():
             form.save()
             return redirect('available_courses') 

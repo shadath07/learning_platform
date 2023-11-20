@@ -32,6 +32,7 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     rating = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)  
     has_contents = models.BooleanField(default=False)
+    thumbnail = models.ImageField(upload_to='course_thumbnails/', null=False, blank=False)
     def __str__(self):
         return f'{self.title} by {self.teacher}'
 

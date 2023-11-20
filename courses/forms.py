@@ -25,7 +25,7 @@ class ResetPasswordForm(forms.Form):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['title', 'description', 'teacher', 'price', 'rating']
+        fields = ['title', 'description', 'teacher', 'price', 'rating','thumbnail']
 
 class ContentForm(forms.ModelForm):
     class Meta:
